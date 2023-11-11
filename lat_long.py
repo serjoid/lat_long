@@ -3,7 +3,7 @@ import pandas as pd
 import requests
 from tqdm import tqdm
 
-# Configure your PostgreSQL connection string
+# Configure your PostgreSQL connection string - Generic credentials, use your own credentials from your database
 db_config = {
     'user': 'postgres',
     'password': 'postgres',
@@ -13,7 +13,7 @@ db_config = {
 }
 
 # Your Google API Key
-google_api_key = 'AIzaSyC4ZQBDG1HpIrWh66HAtKT6deKrZoRDYRA'
+google_api_key = 'your_api_key_google_maps' #https://developers.google.com/maps/documentation/javascript/get-api-key
 
 def get_geocode(address):
     url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={google_api_key}"
@@ -45,6 +45,7 @@ for start in tqdm(range(0, len(df), batch_size), desc="Processing batches"):
     end = start + batch_size
     batch = df.iloc[start:end]
     for index, row in batch.iterrows():
+        # here i'm using the name of the columns from my table on my database, please verify your table header
         lat, lng = get_geocode(f"{row['tipo_logradouro']} {row['logradouro']} {row['numero']} {row['complemento']} {row['cep']} {row['municipio']} {row['uf']}")
         if lat is not None and lng is not None:
             update_query = f"""
